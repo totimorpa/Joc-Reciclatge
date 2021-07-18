@@ -29,6 +29,8 @@ const trashTypes2 = [plastic, paper, vidre, organic, rebuig];
 
 let P1;
 let P2;
+var score1 = 0;
+var score2 = 0;
 let cursors;
 var keys;
 var trash0, trash1, trash2, trash3, trash4, trash5
@@ -67,32 +69,29 @@ function create ()
     bg.setScale(1.2,1.2);
 
     
-
+    trashTypes2[0] = this.physics.add.sprite(0,0, 'Plastic')
+    trashTypes2[0].setOrigin(0,1);
+    trashTypes2[0].setPosition(472, 1052);
+    trashTypes2[0].setScale(0.8,0.8);
     
-    paper = this.physics.add.sprite(0,0, 'Paper')
-    paper.setOrigin(0,1);
-    paper.setPosition(90, 1052);
-    paper.setScale(0.8,0.8);
+    trashTypes2[1] = this.physics.add.sprite(0,0, 'Paper')
+    trashTypes2[1].setOrigin(0,1);
+    trashTypes2[1].setPosition(90, 1052);
+    trashTypes2[1].setScale(0.8,0.8);
+
+    trashTypes2[2] = this.physics.add.sprite(0,0, 'Vidre')
+    trashTypes2[2].setOrigin(0,1);
+    trashTypes2[2].setPosition(865, 1052);
+    trashTypes2[2].setScale(0.8,0.8);
+
+    trashTypes2[3] = this.physics.add.sprite(0,0, 'Organic')
+    trashTypes2[3].setOrigin(0,1);
+    trashTypes2[3].setPosition(1220, 1052);
     
-    plastic = this.physics.add.sprite(0,0, 'Plastic')
-    plastic.setOrigin(0,1);
-    plastic.setPosition(472, 1052);
-    plastic.setScale(0.8,0.8);
-
-
-    vidre = this.physics.add.sprite(0,0, 'Vidre')
-    vidre.setOrigin(0,1);
-    vidre.setPosition(865, 1052);
-    vidre.setScale(0.8,0.8);
-
-    organic = this.physics.add.sprite(0,0, 'Organic')
-    organic.setOrigin(0,1);
-    organic.setPosition(1220, 1052);
-    
-    rebuig = this.physics.add.sprite(0,0, 'Rebuig')
-    rebuig.setOrigin(0,1);
-    rebuig.setPosition(1550, 1052);
-    rebuig.setScale(0.8,0.8);
+    trashTypes2[4] = this.physics.add.sprite(0,0, 'Rebuig')
+    trashTypes2[4].setOrigin(0,1);
+    trashTypes2[4].setPosition(1550, 1052);
+    trashTypes2[4].setScale(0.8,0.8);
 
     P1 = this.physics.add.sprite(
         this.physics.world.bounds.width * 0.1,
@@ -121,7 +120,8 @@ function create ()
         this.physics.add.overlap(P2,trash[i], grabTrash, null, this);
 
         for (let j = 0; j<5; j++){
-            this.physics.add.overlap(trash[i],trashTypes2[j], containerCollide, null, this);
+            this.physics.add.overlap(trash[i],trashTypes2[j],P1, containerCollide, null, this);
+            this.physics.add.overlap(trash[i],trashTypes2[j],P2, containerCollide, null, this);
         }
 
     }
@@ -151,8 +151,8 @@ function create ()
         G: 'G'
     });
 
-    this.scoreP1 = this.add.text(game.config.width/2 - 110, 80, '1', { fontSize: '100px', fill: '#000' });
-    this.scoreP2 = this.add.text(game.config.width/2 + 110, 80, '0', { fontSize: '100px', fill: '#000' });
+    this.scoreP1 = this.add.text(game.config.width/2 - 110, 80, score1, { fontSize: '100px', fill: '#000' });
+    this.scoreP2 = this.add.text(game.config.width/2 + 110, 80, score2, { fontSize: '100px', fill: '#000' });
     this.timer = this.add.text(game.config.width/2-40, 16, '2:13', { fontSize: '60px', fill: '#000' });
 
 }
@@ -237,8 +237,6 @@ function grabTrash(player , trash){
         }
     }
 }
-function containerCollide(trash, contenidor){
-    console.log("collision");
-    console.log( trash.container);
-    console.log(contenidor)
+function containerCollide(trashelement, contenidor, player){
+    
 }
