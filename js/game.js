@@ -24,9 +24,18 @@ let config = {
 const game = new Phaser.Game(config);
 const trashTypes = ['Plastic', 'Paper', 'Vidre', 'Organic', 'Rebuig'];
 
+let plastic, paper, vidre, organic, rebuig;
+const trashTypes2 = [plastic, paper, vidre, organic, rebuig];
+
 let P1;
 let P2;
 let cursors;
+var keys;
+var trash0, trash1, trash2, trash3, trash4, trash5
+var trash = [trash0,trash1,trash2,trash3,trash4];
+var TrashInHand1 = '';
+var TrashInHand2 = '';
+
 
 function preload ()
 {
@@ -60,38 +69,30 @@ function create ()
     
 
     
-    let paper = this.add.sprite(0,0, 'Paper')
+    paper = this.physics.add.sprite(0,0, 'Paper')
     paper.setOrigin(0,1);
     paper.setPosition(90, 1052);
     paper.setScale(0.8,0.8);
     
-    let plastic = this.add.sprite(0,0, 'Plastic')
+    plastic = this.physics.add.sprite(0,0, 'Plastic')
     plastic.setOrigin(0,1);
     plastic.setPosition(472, 1052);
     plastic.setScale(0.8,0.8);
 
 
-    let vidre = this.add.sprite(0,0, 'Vidre')
+    vidre = this.physics.add.sprite(0,0, 'Vidre')
     vidre.setOrigin(0,1);
     vidre.setPosition(865, 1052);
     vidre.setScale(0.8,0.8);
 
-    let organic = this.add.sprite(0,0, 'Organic')
+    organic = this.physics.add.sprite(0,0, 'Organic')
     organic.setOrigin(0,1);
     organic.setPosition(1220, 1052);
     
-    let rebuig = this.add.sprite(0,0, 'Rebuig')
+    rebuig = this.physics.add.sprite(0,0, 'Rebuig')
     rebuig.setOrigin(0,1);
     rebuig.setPosition(1550, 1052);
     rebuig.setScale(0.8,0.8);
-
-    for (let i =0; i<5; i++){
-        var xx=Phaser.Math.Between(100,game.config.width-100)
-        var yy=Phaser.Math.Between(200,game.config.height-500)
-        
-        let trash = this.add.sprite(xx,yy, trashTypes[Math.floor(Math.random()*5)]+Math.floor(Math.random()*2))
-        trash.setScale(0.5,0.5);
-    }
 
     P1 = this.physics.add.sprite(
         this.physics.world.bounds.width * 0.1,
@@ -104,45 +105,140 @@ function create ()
         'P2'
     );
 
+    for (let i=0; i<5; i++){
+        var xx=Phaser.Math.Between(100,game.config.width-100)
+        var yy=Phaser.Math.Between(200,game.config.height-500)
+
+        let tipus = trashTypes[Math.floor(Math.random()*5)]
+        trash[i] = this.physics.add.sprite(xx,yy, tipus + Math.floor(Math.random()*2))
+        trash[i].container = tipus;
+        trash[i].id = String(i);
+        trash[i].setScale(0.5,0.5);
+        trash[i].setCollideWorldBounds(true);
+        // this.physics.add.collider(P1,trash[i]);
+        // this.physics.add.collider(P2,trash[i]);
+        this.physics.add.overlap(P1,trash[i], grabTrash, null, this);
+        this.physics.add.overlap(P2,trash[i], grabTrash, null, this);
+
+        for (let j = 0; j<5; j++){
+            this.physics.add.overlap(trash[i],trashTypes2[j], containerCollide, null, this);
+        }
+
+    }
+
+
+    
+    
+
     P1.setScale(0.4,0.4);
     P2.setScale(0.4,0.4);
 
     P1.setCollideWorldBounds(true);
     P2.setCollideWorldBounds(true);
+    
+    
+    
+    keys = this.input.keyboard.addKeys({
+        up: 'up',
+        down: 'down',
+        left: 'left',
+        right: 'right',
+        A: 'A',
+        W: 'W',
+        S: 'S',
+        D: 'D',
+        SPACE: 'SPACE',
+        G: 'G'
+    });
 
-    cursors = this.input.keyboard.createCursorKeys();
-
-
-    this.scoreP1 = this.add.text(game.config.width/2 - 110, 80, '0', { fontSize: '100px', fill: '#000' });
+    this.scoreP1 = this.add.text(game.config.width/2 - 110, 80, '1', { fontSize: '100px', fill: '#000' });
     this.scoreP2 = this.add.text(game.config.width/2 + 110, 80, '0', { fontSize: '100px', fill: '#000' });
     this.timer = this.add.text(game.config.width/2-40, 16, '2:13', { fontSize: '60px', fill: '#000' });
 
-    this.physics.add.collider(P1, trash);
-    this.physics.add.collider(trash, plastic);
-
-    
-    
-
-   
 }
-function update(){
+    
 
-    if (cursors.up.isDown){
-        P1.setVelocityY(-250);
+function update(){
+    if (keys.up.isDown){
+        P1.setVelocityY(-350);
     }
-    else if (cursors.down.isDown){
-        P1.setVelocityY(250);
+    else if (keys.down.isDown){
+        P1.setVelocityY(350);
     }
     else{
         P1.setVelocityY(0);
     }
-    if (cursors.right.isDown){
-        P1.setVelocityX(250);
+    if (keys.right.isDown){
+        P1.setVelocityX(350);
     }
-    else if (cursors.left.isDown){
-        P1.setVelocityX(-250);
+    else if (keys.left.isDown){
+        P1.setVelocityX(-350);
     }
     else{
-            P1.setVelocityX(0);
+        P1.setVelocityX(0);
     }
+
+    if (keys.W.isDown){
+        P2.setVelocityY(-350);
+    }
+    else if (keys.S.isDown){
+        P2.setVelocityY(350);
+    }
+    else{
+        P2.setVelocityY(0);
+    }
+    if (keys.D.isDown){
+        P2.setVelocityX(350);
+    }
+    else if (keys.A.isDown){
+        P2.setVelocityX(-350);
+    }
+    else{
+        P2.setVelocityX(0);
+    }
+
+    
+
+
+};
+
+function grabTrash(player , trash){
+    if (player.texture.key == 'P1' ){
+        if (keys.SPACE.isDown){
+            if ((TrashInHand1 == '' || TrashInHand1 == trash.id) && TrashInHand2 != trash.id){
+                trash.x = player.x;
+                trash.y = player.y;
+                trash.body.velocity.x = player.body.velocity.x;
+                trash.body.velocity.y = player.body.velocity.y;
+                TrashInHand1 = trash.id 
+            }  
+        }
+        else{
+            trash.body.velocity.x = 0;
+            trash.body.velocity.y = 0;
+            TrashInHand1 = '';
+        }
+    }
+    else{
+        
+        if (keys.G.isDown){
+            if ((TrashInHand2 == '' || TrashInHand2 == trash.id) && TrashInHand1 != trash.id){
+                trash.x = player.x;
+                trash.y = player.y;
+                trash.body.velocity.x = player.body.velocity.x;
+                trash.body.velocity.y = player.body.velocity.y;
+                TrashInHand2 = trash.id 
+            }
+        }
+        else{
+            trash.body.velocity.x = 0;
+            trash.body.velocity.y = 0;
+            TrashInHand2 = '';
+        }
+    }
+}
+function containerCollide(trash, contenidor){
+    console.log("collision");
+    console.log( trash.container);
+    console.log(contenidor)
 }
