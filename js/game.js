@@ -85,11 +85,13 @@ function create ()
     rebuig.setPosition(1550, 1052);
     rebuig.setScale(0.8,0.8);
 
-    var xx=Phaser.Math.Between(100,game.config.width-100)
-    var yy=Phaser.Math.Between(200,game.config.height-500)
-    
-    let trash = this.add.sprite(xx,yy, trashTypes[Math.floor(Math.random()*5)]+Math.floor(Math.random()*2))
-    trash.setScale(0.5,0.5);
+    for (let i =0; i<5; i++){
+        var xx=Phaser.Math.Between(100,game.config.width-100)
+        var yy=Phaser.Math.Between(200,game.config.height-500)
+        
+        let trash = this.add.sprite(xx,yy, trashTypes[Math.floor(Math.random()*5)]+Math.floor(Math.random()*2))
+        trash.setScale(0.5,0.5);
+    }
 
     P1 = this.physics.add.sprite(
         this.physics.world.bounds.width * 0.1,
