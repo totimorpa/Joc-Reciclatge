@@ -63,35 +63,64 @@ function preload ()
 
 function create ()
 {
-
     let bg = this.add.sprite(0,0, 'background');
     bg.setOrigin(0,0);
     bg.setScale(1.2,1.2);
-
     
     trashTypes2[0] = this.physics.add.sprite(0,0, 'Plastic')
     trashTypes2[0].setOrigin(0,1);
-    trashTypes2[0].setPosition(472, 1052);
-    trashTypes2[0].setScale(0.8,0.8);
+    trashTypes2[0].setPosition(512, 1052);
+    trashTypes2[0].setScale(0.65,0.65);
+    trashTypes2[0].tipus = 'Plastic';
     
     trashTypes2[1] = this.physics.add.sprite(0,0, 'Paper')
     trashTypes2[1].setOrigin(0,1);
-    trashTypes2[1].setPosition(90, 1052);
-    trashTypes2[1].setScale(0.8,0.8);
+    trashTypes2[1].setPosition(130, 1052);
+    trashTypes2[1].setScale(0.65,0.65);
+    trashTypes2[1].tipus = 'Paper';
 
     trashTypes2[2] = this.physics.add.sprite(0,0, 'Vidre')
     trashTypes2[2].setOrigin(0,1);
-    trashTypes2[2].setPosition(865, 1052);
-    trashTypes2[2].setScale(0.8,0.8);
+    trashTypes2[2].setPosition(905, 1052);
+    trashTypes2[2].setScale(0.65,0.65);
+    trashTypes2[2].tipus = 'Vidre';
 
     trashTypes2[3] = this.physics.add.sprite(0,0, 'Organic')
     trashTypes2[3].setOrigin(0,1);
-    trashTypes2[3].setPosition(1220, 1052);
+    trashTypes2[3].setPosition(1260, 1052);
+    trashTypes2[3].setScale(0.7,0.7);
+    trashTypes2[3].tipus = 'Organic';
     
     trashTypes2[4] = this.physics.add.sprite(0,0, 'Rebuig')
     trashTypes2[4].setOrigin(0,1);
-    trashTypes2[4].setPosition(1550, 1052);
-    trashTypes2[4].setScale(0.8,0.8);
+    trashTypes2[4].setPosition(1590, 1052);
+    trashTypes2[4].setScale(0.65,0.65);
+    trashTypes2[4].tipus = 'Rebuig';
+
+    let plas = this.physics.add.sprite(0,0, 'Plastic')
+    plas.setOrigin(0,1);
+    plas.setPosition(472, 1052);
+    plas.setScale(0.8,0.8);
+    
+    let pap = this.physics.add.sprite(0,0, 'Paper')
+    pap.setOrigin(0,1);
+    pap.setPosition(90, 1052);
+    pap.setScale(0.8,0.8);
+
+    let vid = this.physics.add.sprite(0,0, 'Vidre')
+    vid.setOrigin(0,1);
+    vid.setPosition(865, 1052);
+    vid.setScale(0.8,0.8);
+
+    let org = this.physics.add.sprite(0,0, 'Organic')
+    org.setOrigin(0,1);
+    org.setPosition(1220, 1052);
+    
+    let rebu = this.physics.add.sprite(0,0, 'Rebuig')
+    rebu.setOrigin(0,1);
+    rebu.setPosition(1550, 1052);
+    rebu.setScale(0.8,0.8);
+    
 
     P1 = this.physics.add.sprite(
         this.physics.world.bounds.width * 0.1,
@@ -114,22 +143,15 @@ function create ()
         trash[i].id = String(i);
         trash[i].setScale(0.5,0.5);
         trash[i].setCollideWorldBounds(true);
-        // this.physics.add.collider(P1,trash[i]);
-        // this.physics.add.collider(P2,trash[i]);
         this.physics.add.overlap(P1,trash[i], grabTrash, null, this);
         this.physics.add.overlap(P2,trash[i], grabTrash, null, this);
 
         for (let j = 0; j<5; j++){
-            this.physics.add.overlap(trash[i],trashTypes2[j],P1, containerCollide, null, this);
-            this.physics.add.overlap(trash[i],trashTypes2[j],P2, containerCollide, null, this);
+            this.physics.add.overlap(trash[i],trashTypes2[j], containerCollide, null, this);
+            this.physics.add.overlap(trash[i],trashTypes2[j], containerCollide, null, this);
         }
 
     }
-
-
-    
-    
-
     P1.setScale(0.4,0.4);
     P2.setScale(0.4,0.4);
 
@@ -177,7 +199,6 @@ function update(){
     else{
         P1.setVelocityX(0);
     }
-
     if (keys.W.isDown){
         P2.setVelocityY(-350);
     }
@@ -237,6 +258,48 @@ function grabTrash(player , trash){
         }
     }
 }
-function containerCollide(trashelement, contenidor, player){
+function containerCollide(trashelement, contenidor){
+    if (trashelement.container == contenidor.tipus){
+        if (Math.abs(trashelement.x + trashelement.y - P1.y - P1.x) < Math.abs(trashelement.x + trashelement.y - P2.y - P2.x)){
+            score1 += 1;
+            this.scoreP1.setText(score1)
+        }
+        else{
+            score2 += 1;
+            this.scoreP2.setText(score2)
+        }
+        
+    }
+    else{
+        if (Math.abs(trashelement.x + trashelement.y - P1.y - P1.x) < Math.abs(trashelement.x + trashelement.y - P2.y - P2.x)){
+            score1 -= 1;
+            this.scoreP1.setText(score1)
+        }
+        else{
+            score2 -= 1;
+            this.scoreP2.setText(score2)
+        }
+    }
+    let index = parseInt(trashelement.id);
+    console.log(index);
+    createTrash.bind(this, index);
+    trashelement.destroy();
+};
+
+function createTrash(i){
+    // console.log("i'm in")
+    // var xx=Phaser.Math.Between(100,game.config.width-100)
+    // var yy=Phaser.Math.Between(200,game.config.height-500)
+
+    // let tipus = trashTypes[Math.floor(Math.random()*5)]
+
+    // let patata = this.physics.add.sprite(xx,yy, tipus + Math.floor(Math.random()*2))
+    // patata.container = tipus;
+    // patata.id = String(i);
+    // patata.setScale(0.5,0.5);
+    // patata.setCollideWorldBounds(true);
+    // this.physics.add.overlap(P1,trash[i], grabTrash, null, this);
+
     
+
 }
