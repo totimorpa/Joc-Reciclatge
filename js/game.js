@@ -37,6 +37,7 @@ var trash0, trash1, trash2, trash3, trash4, trash5
 var trash = [trash0,trash1,trash2,trash3,trash4];
 var TrashInHand1 = '';
 var TrashInHand2 = '';
+let t;
 
 
 function preload ()
@@ -63,6 +64,8 @@ function preload ()
 
 function create ()
 {
+
+    
     let bg = this.add.sprite(0,0, 'background');
     bg.setOrigin(0,0);
     bg.setScale(1.2,1.2);
@@ -259,47 +262,59 @@ function grabTrash(player , trash){
     }
 }
 function containerCollide(trashelement, contenidor){
-    if (trashelement.container == contenidor.tipus){
-        if (Math.abs(trashelement.x + trashelement.y - P1.y - P1.x) < Math.abs(trashelement.x + trashelement.y - P2.y - P2.x)){
-            score1 += 1;
-            this.scoreP1.setText(score1)
+    if (t == 0){
+        if (trashelement.container == contenidor.tipus){
+            if (Math.abs(trashelement.x + trashelement.y - P1.y - P1.x) < Math.abs(trashelement.x + trashelement.y - P2.y - P2.x)){
+                score1 += 1;
+                this.scoreP1.setText(score1)
+            }
+            else{
+                score2 += 1;
+                this.scoreP2.setText(score2)
+            }
+            
         }
         else{
-            score2 += 1;
-            this.scoreP2.setText(score2)
+            if (Math.abs(trashelement.x + trashelement.y - P1.y - P1.x) < Math.abs(trashelement.x + trashelement.y - P2.y - P2.x)){
+                score1 -= 1;
+                this.scoreP1.setText(score1)
+            }
+            else{
+                score2 -= 1;
+                this.scoreP2.setText(score2)
+            }
         }
-        
+        console.log('canvi');
+        // trashelement.destroy()
+        createTrash(parseInt(trashelement.id));
+        t ++;
     }
     else{
-        if (Math.abs(trashelement.x + trashelement.y - P1.y - P1.x) < Math.abs(trashelement.x + trashelement.y - P2.y - P2.x)){
-            score1 -= 1;
-            this.scoreP1.setText(score1)
-        }
-        else{
-            score2 -= 1;
-            this.scoreP2.setText(score2)
-        }
+        t = 0
     }
-    let index = parseInt(trashelement.id);
-    console.log(index);
-    createTrash.bind(this, index);
-    trashelement.destroy();
+    
 };
 
 function createTrash(i){
-    // console.log("i'm in")
-    // var xx=Phaser.Math.Between(100,game.config.width-100)
-    // var yy=Phaser.Math.Between(200,game.config.height-500)
+    var xx=Phaser.Math.Between(100,game.config.width-100);
+    var yy=Phaser.Math.Between(200,game.config.height-500);
 
-    // let tipus = trashTypes[Math.floor(Math.random()*5)]
+    let tipus = trashTypes[Math.floor(Math.random()*5)];
 
-    // let patata = this.physics.add.sprite(xx,yy, tipus + Math.floor(Math.random()*2))
-    // patata.container = tipus;
-    // patata.id = String(i);
-    // patata.setScale(0.5,0.5);
-    // patata.setCollideWorldBounds(true);
-    // this.physics.add.overlap(P1,trash[i], grabTrash, null, this);
+    if (Math.abs(trash[i].x + trash[i].y - P1.y - P1.x) < Math.abs(trash[i].x + trash[i].y - P2.y - P2.x)){
+        TrashInHand1 = '';
+    }
+    else{
+        TrashInHand2 = '';
+    }   
 
-    
+    trash[i].setTexture(tipus + Math.floor(Math.random()*2));
+    trash[i].container = tipus;
+    trash[i].setPosition(xx,yy);
+    trash[i].body.velocity.x = 0;
+    trash[i].body.velocity.y = 0;
 
+    console.log('reubicat!')
+
+     
 }
